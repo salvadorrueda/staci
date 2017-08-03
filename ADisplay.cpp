@@ -49,11 +49,12 @@ void ADisplay::setup(){
 
   tft.setTextWrap(false); // Allow text to run off right edge
   tft.fillScreen(ST7735_BLACK);
+  tft.setRotation(1); // landscape 
 }
 
 void ADisplay::println(char *msg){
-   tft.fillScreen(ST7735_BLACK);
-   tft.setRotation(1);
+    tft.fillScreen(ST7735_BLACK);
+   //
    //Serial.println(tft.getRotation(), DEC);
  
     tft.setCursor(5, 30);
