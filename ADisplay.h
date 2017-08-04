@@ -14,6 +14,7 @@
 //  ADisplay();
   void setup();
   void println(char *msg);
+  void displayDateAlarm(char *date, char *alarm);
  };
 
  

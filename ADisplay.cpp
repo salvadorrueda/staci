@@ -47,21 +47,38 @@ void ADisplay::setup(){
     // Use this initializer if you're using a 1.8" TFT
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
 
-  tft.setTextWrap(false); // Allow text to run off right edge
+  //tft.setTextWrap(false); // Allow text to run off right edge
   tft.fillScreen(ST7735_BLACK);
   tft.setRotation(1); // landscape 
 }
 
 void ADisplay::println(char *msg){
-    tft.fillScreen(ST7735_BLACK);
+     tft.fillScreen(ST7735_BLACK);
+   //
+   //Serial.println(tft.getRotation(), DEC);
+ 
+    tft.setCursor(0, 0);
+    tft.setTextSize(1);
+    tft.setTextColor(ST7735_WHITE);
+    tft.println(msg);  
+ 
+}
+
+void ADisplay::displayDateAlarm(char *date, char *alarm){
+      tft.fillScreen(ST7735_BLACK);
    //
    //Serial.println(tft.getRotation(), DEC);
  
     tft.setCursor(5, 30);
     tft.setTextSize(5);
     tft.setTextColor(ST7735_GREEN);
-    tft.println(msg);  
- 
+    tft.println(date);  
+
+   
+    tft.setCursor(35, 80);
+    tft.setTextSize(3);
+    tft.setTextColor(ST7735_RED);
+    tft.println(alarm);  
 }
 
 
