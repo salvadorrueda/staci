@@ -114,13 +114,14 @@ void ADisplay::displayDateAlarm(char *odate, char *date, char *alarm){
 }
 
 
-void ADisplay::displaySetAlarm(char *date, char *alarm){
+void ADisplay::displaySetAlarm(char *date, char *alarm, bool settled){
 
       tft.fillScreen(ST7735_BLACK);
   
       tft.setCursor(0, 0);
       tft.setTextSize(2);
-      tft.setTextColor(ST7735_RED);
+      if(settled) tft.setTextColor(ST7735_BLACK); 
+      else tft.setTextColor(ST7735_RED);
       tft.println("setting alarm");
    
       tft.setCursor(5, 30);
@@ -134,29 +135,39 @@ void ADisplay::displaySetAlarm(char *date, char *alarm){
       tft.println(alarm);  
 }
 
-void ADisplay::setAlarmBlink(int pos, bool black){
+
+
+void ADisplay::setAlarmBlink(int posn, bool black, char *alarm){
+
+    tft.setCursor(35+posn*18, 80);
    
-    if(!black){
+    if(black){
       tft.setTextColor(ST7735_RED);
     }else{
       tft.setTextColor(ST7735_BLACK);
     }
     
-    tft.setCursor(35, 80);
     tft.println("_");
-    
-    //key = keypad.getKey();
-  }
 
-void ADisplay::setCursorPrintln(int row, int col, char key){
-  
-    tft.setCursor(35, 80);
-    tft.setTextColor(ST7735_BLACK);
-    tft.println("0");
-    
     tft.setTextColor(ST7735_RED);
     tft.setCursor(35, 80);
+    tft.println(alarm);
+  }
+
+void ADisplay::setCursorPrintln(int posn, char key, char *alarm){
+    int posn1 = posn;
+    
+    setAlarmBlink(posn, 0, alarm);
+
+    tft.setCursor(35, 80);
+    tft.setTextColor(ST7735_BLACK);
+    tft.println(alarm);
+    
+    
+    tft.setTextColor(ST7735_RED);
+    tft.setCursor(35+(posn*18), 80);
     tft.println(key);
+ 
 }
 
 

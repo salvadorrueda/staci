@@ -33,16 +33,54 @@ void setup(void) {
 }
 
 char key;
-bool next = false;
-int j = 0;
+int b = 0; // Blink black or red.
+unsigned long pMillis = 0; // Previous Milis
+unsigned long cMillis = millis(); // Current Milis
+const long interval = 500;       // interval at which to blink (milliseconds)
+int posn = 0; // Pos Alarm digit 
+ 
+
 
 void loop(void) {
   
   rtc.setHourTimeToMessage(adate);
   rtc.getAlarm(aalarm);
   
-  adisplay.displayDateAlarm(odate, adate, aalarm); 
+  adisplay.displayDateAlarm(odate, adate, aalarm);
+   
+  key = keypad.getKey();
+ if(key=='A'){
+    //Serial.print(key);
+    adisplay.displaySetAlarm(adate, aalarm, false);
+    posn = 0;
+    while(posn<5){
+      key = keypad.getKey();
+      if(key){
+                                       
+          adisplay.setCursorPrintln(posn, key, aalarm); 
+          
+          aalarm[posn] = key;
+          rtc.setAlarm(aalarm);  
+          posn++;
+          if(posn == 2) posn ++;
+          adisplay.setAlarmBlink(posn, 0, aalarm);
 
+
+      }else{
+          cMillis = millis();
+          if (cMillis - pMillis >= interval) {
+          // save the last time you blinked the LED
+          pMillis = cMillis;
+
+          if(b) b = 0; else b = 1;
+          adisplay.setAlarmBlink(posn, b, aalarm);
+          }          
+      }      
+    } // posn 5    
+    adisplay.displaySetAlarm(adate, aalarm, true);
+    eeprom.eput(aalarm);
+    
+  } // Key == A
   
 
  /* 
@@ -52,35 +90,7 @@ void loop(void) {
    Serial.println("No alarm");
   
  */   
-/*
-  for(int i = 0; i<1000; i++){
-    key = keypad.getKey();
-    if(key=='A'){
-      //Serial.print(key);
-      adisplay.displaySetAlarm(adate, aalarm);
-      next = false;
-      while(!next){
-        key = keypad.getKey();
-        if(key){
-          //tft.setCursor(35, 80);
-          //tft.println(key);
-          
-          adisplay.setCursorPrintln(35, 80, key);  
-          next = true;
-        }else{
-          adisplay.setAlarmBlink(35,j%2);          
-        }
-        j++;
-        delay(500);
-      }
-      
-    } // Key == A
-    
-    delay(60);
-  }
-  
- */
-  
+
 }
 
 
