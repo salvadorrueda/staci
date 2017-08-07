@@ -47,7 +47,21 @@ void loop(void) {
   rtc.getAlarm(aalarm);
   
   adisplay.displayDateAlarm(odate, adate, aalarm);
-   
+
+  chechForSettingAnAlarm();
+  /* 
+  if(rtc.checkAlarm())
+   Serial.println("Alarm");
+  else 
+   Serial.println("No alarm");
+  
+ */   
+ 
+
+}
+
+  void chechForSettingAnAlarm(){
+ 
   key = keypad.getKey();
  if(key=='A'){
     //Serial.print(key);
@@ -81,17 +95,8 @@ void loop(void) {
     eeprom.eput(aalarm);
     
   } // Key == A
-  
-
- /* 
-  if(rtc.checkAlarm())
-   Serial.println("Alarm");
-  else 
-   Serial.println("No alarm");
-  
- */   
-
 }
+
 
 
 
