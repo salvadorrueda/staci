@@ -1,16 +1,17 @@
 
 
-
 #include "ADisplay.h"
 #include "ARTC.h"
 #include "AEEPROM.h"
 #include "Akeypad.h"
-
+#include "SerialMP3Player.h"
 
 ADisplay adisplay;
 ARTC rtc;
 AEEPROM eeprom;
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+SerialMP3Player mp3;
+
 
 
 char message[46] = "Staci ";
@@ -29,6 +30,9 @@ void setup(void) {
   eeprom.eget(aalarm);
   rtc.setAlarm(aalarm);
   //rtc.setAlarm("21:19");
+  mp3.begin(9600);
+   mp3.sendCommand(CMD_SEL_DEV, 0, 2);
+  delay(500);
      
 }
 
@@ -49,13 +53,17 @@ void loop(void) {
   adisplay.displayDateAlarm(odate, adate, aalarm);
 
   chechForSettingAnAlarm();
-  /* 
-  if(rtc.checkAlarm())
+   
+  if(rtc.checkAlarm()){
    Serial.println("Alarm");
-  else 
-   Serial.println("No alarm");
-  
- */   
+   mp3.play(1);    
+  }
+  // else 
+  // Serial.println("No alarm");   
+
+
+
+
  
 
 }

@@ -69,6 +69,8 @@
     _alarm[2] = alarm[2];
     _alarm[3] = alarm[3];
     _alarm[4] = alarm[4];
+
+    _ATriggered = 0;
   }
 
 
