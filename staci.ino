@@ -5,12 +5,15 @@
 #include "AEEPROM.h"
 #include "Akeypad.h"
 #include "SerialMP3Player.h"
+#include "Button.h"
 
 ADisplay adisplay;
 ARTC rtc;
 AEEPROM eeprom;
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 SerialMP3Player mp3;
+Button button(2);   // Button attached on pin 2
+
 
 
 
@@ -22,18 +25,16 @@ char odate[6] = "00:00"; // Old date
 
 void setup(void) {
   Serial.begin(9600);
-  //Serial.print("Hello! Adafruit ST7735 rotation test");
   adisplay.setup();
-
-  //eeprom.eput("06:08o");
-  
+    
   eeprom.eget(aalarm);
   rtc.setAlarm(aalarm);
-  //rtc.setAlarm("21:19");
+  
   mp3.begin(9600);
-   mp3.sendCommand(CMD_SEL_DEV, 0, 2);
+  mp3.sendCommand(CMD_SEL_DEV, 0, 2);
   delay(500);
-     
+
+  button.setup();
 }
 
 char key;
@@ -56,14 +57,14 @@ void loop(void) {
    
   if(rtc.checkAlarm()){
    Serial.println("Alarm");
-   mp3.play(1);    
+   mp3.sendCommand(CMD_FOLDER_CYCLE, 1, 0); 
   }
   // else 
   // Serial.println("No alarm");   
 
-
-
-
+  if(button.pressed()) {
+     mp3.stop();
+  }
  
 
 }
