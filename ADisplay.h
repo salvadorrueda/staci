@@ -17,8 +17,9 @@
   void println(char *msg);
   void displayDateAlarm(char *odate, char *date, char *alarm);
   void displaySetAlarm(char *date, char *alarm, bool settled);
-  void setAlarmBlink(int pos, bool black, char *alarm);
-  void setCursorPrintln(int posn, char key, char *alarm);
+  void setColorBlink(int pos, bool black, char *alarm, unsigned int color);
+  void setCursorPrintlnColor(int posn, char key, char *alarm, unsigned int color);
+  void displaySetClock(char *date, char *alarm, bool settled);
  };
 
  

@@ -61,7 +61,17 @@ void loop(void) {
     }
   }
 
-  chechForSettingAnAlarm();
+  key = keypad.getKey();
+  switch(key){
+    case 'A': 
+      chechForSettingAnAlarm(); // If 'A' is pressent set the Alarm.
+      break;
+    case 'C':
+      checkForSettingClock();   // If 'C' is pressed then sets hour and minutes.     
+      break;
+  }
+  
+  
 
   if(button.pressed()) {
      mp3.stop();
@@ -69,21 +79,19 @@ void loop(void) {
 }
 
 void chechForSettingAnAlarm() {
-  key = keypad.getKey();
-  if(key=='A') {
     //Serial.print(key);
     adisplay.displaySetAlarm(adate, aalarm, false);
     posn = 0;
     while(posn<5) {
       key = keypad.getKey();
       if(key){
-        adisplay.setCursorPrintln(posn, key, aalarm);
+        adisplay.setCursorPrintlnColor(posn, key, aalarm, ST7735_RED);
 
         aalarm[posn] = key;
         rtc.setAlarm(aalarm);
         posn++;
         if(posn == 2) posn ++;
-        adisplay.setAlarmBlink(posn, 0, aalarm);
+        adisplay.setColorBlink(posn, 0, aalarm, ST7735_RED);
        }else{ 
         // blinks _ every interval (500ms)
         cMillis = millis();
@@ -92,12 +100,43 @@ void chechForSettingAnAlarm() {
           pMillis = cMillis;
 
           if(b) b = 0; else b = 1;
-          adisplay.setAlarmBlink(posn, b, aalarm);
+          adisplay.setColorBlink(posn, b, aalarm, ST7735_RED);
         }
       }
     } // posn 5
     adisplay.displaySetAlarm(adate, aalarm, true);
     eeprom.eput(aalarm);
-  } // Key == A
 }
+
+void checkForSettingClock(){
+    adisplay.displaySetClock(adate, aalarm, false);
+       posn = 0;
+    while(posn<5) {
+      key = keypad.getKey();
+      if(key){
+        adisplay.setCursorPrintlnColor(posn, key, adate, ST7735_GREEN);
+
+        adate[posn] = key;
+        //rtc.setAlarm(aalarm);
+        posn++;
+        if(posn == 2) posn ++;
+        adisplay.setColorBlink(posn, 0, adate, ST7735_GREEN);
+       }else{ 
+        // blinks _ every interval (500ms)
+        cMillis = millis();
+        if (cMillis - pMillis >= interval) {
+          // save the last time you blinked
+          pMillis = cMillis;
+
+          if(b) b = 0; else b = 1;
+          adisplay.setColorBlink(posn, b, adate, ST7735_GREEN);
+        }
+      }
+    } // posn 5
+    adisplay.displaySetAlarm(adate, aalarm, true);
+    //eeprom.eput(aalarm);
+    rtc.setCTime(adate);
+
+}
+
 

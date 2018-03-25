@@ -137,38 +137,62 @@ void ADisplay::displaySetAlarm(char *date, char *alarm, bool settled){
 
 
 
-void ADisplay::setAlarmBlink(int posn, bool black, char *alarm){
+void ADisplay::setColorBlink(int posn, bool black, char *alarm, unsigned int color){
 
     tft.setCursor(35+posn*18, 80);
    
     if(black){
-      tft.setTextColor(ST7735_RED);
+      tft.setTextColor(color); // ST7735_RED or ST7735_GREEN 
     }else{
       tft.setTextColor(ST7735_BLACK);
     }
     
     tft.println("_");
 
-    tft.setTextColor(ST7735_RED);
+    tft.setTextColor(color);
     tft.setCursor(35, 80);
     tft.println(alarm);
   }
 
-void ADisplay::setCursorPrintln(int posn, char key, char *alarm){
+  
+
+void ADisplay::setCursorPrintlnColor(int posn, char key, char *alarm, unsigned int color){
     int posn1 = posn;
     
-    setAlarmBlink(posn, 0, alarm);
+    setColorBlink(posn, 0, alarm, color);
 
     tft.setCursor(35, 80);
     tft.setTextColor(ST7735_BLACK);
     tft.println(alarm);
     
     
-    tft.setTextColor(ST7735_RED);
+    tft.setTextColor(color);
     tft.setCursor(35+(posn*18), 80);
-    tft.println(key);
- 
+    tft.println(key); 
 }
+
+void ADisplay::displaySetClock(char *date, char *alarm, bool settled){
+
+      tft.fillScreen(ST7735_BLACK);
+  
+      tft.setCursor(0, 0);
+      tft.setTextSize(2);
+      
+      if(settled) tft.setTextColor(ST7735_BLACK); 
+      else tft.setTextColor(ST7735_RED);
+      tft.println("setting clock");
+   
+      tft.setCursor(5, 30);
+      tft.setTextSize(5);
+      tft.setTextColor(ST7735_GREEN);
+      tft.println(date);  
+  
+      tft.setCursor(35, 80);
+      tft.setTextSize(3);
+      tft.setTextColor(ST7735_GREEN);
+      tft.println(date);  
+}
+
 
 
 
