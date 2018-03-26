@@ -17,6 +17,7 @@ char message[46] = "Staci ";
 
 char adate[6] = "00:00"; // Aux date
 char aalarm[7] = "06:00";// Aux alarm
+char asetting[6] = "00:00"; // Aux for setting
 char odate[6] = "00:00"; // Old date
 
 void setup(void) {
@@ -62,15 +63,11 @@ void loop(void) {
   }
 
   key = keypad.getKey();
-  switch(key){
-    case 'A': 
-      chechForSettingAnAlarm(); // If 'A' is pressent set the Alarm.
-      break;
-    case 'C':
-      checkForSettingClock();   // If 'C' is pressed then sets hour and minutes.     
-      break;
-  }
-  
+  setting(key);
+  /*  
+    setting('A'); // Setting an Alarm.
+    setting('C'); // Setting Clock hour and minutes'      
+  */
   
 
   if(button.pressed()) {
@@ -78,20 +75,32 @@ void loop(void) {
   }
 }
 
-void chechForSettingAnAlarm() {
-    //Serial.print(key);
-    adisplay.displaySetAlarm(adate, aalarm, false);
+void setting(char key) {
+    int color;
+    
+    switch(key){
+    case 'A': 
+      //chechForSettingAnAlarm(); // If 'A' is pressent set the Alarm.
+      // Setting an Alarm.
+      color = ST7735_RED;
+      asetting[0]=aalarm[0];
+      asetting[1]=aalarm[1];
+      asetting[3]=aalarm[3];
+      asetting[4]=aalarm[4];
+      adisplay.displaySet(adate, aalarm, false, 'a');
+
+///    
     posn = 0;
     while(posn<5) {
       key = keypad.getKey();
       if(key){
-        adisplay.setCursorPrintlnColor(posn, key, aalarm, ST7735_RED);
+        adisplay.setCursorPrintlnColor(posn, key, asetting, color);
 
-        aalarm[posn] = key;
-        rtc.setAlarm(aalarm);
+        asetting[posn] = key;
+        //rtc.setAlarm(aalarm);
         posn++;
         if(posn == 2) posn ++;
-        adisplay.setColorBlink(posn, 0, aalarm, ST7735_RED);
+        adisplay.setColorBlink(posn, 0, asetting, color);
        }else{ 
         // blinks _ every interval (500ms)
         cMillis = millis();
@@ -100,16 +109,76 @@ void chechForSettingAnAlarm() {
           pMillis = cMillis;
 
           if(b) b = 0; else b = 1;
-          adisplay.setColorBlink(posn, b, aalarm, ST7735_RED);
+          adisplay.setColorBlink(posn, b, asetting, color);
         }
       }
     } // posn 5
-    adisplay.displaySetAlarm(adate, aalarm, true);
-    eeprom.eput(aalarm);
+
+///   
+      aalarm[0]=asetting[0];
+      aalarm[1]=asetting[1];
+      aalarm[3]=asetting[3];
+      aalarm[4]=asetting[4];
+
+      adisplay.displaySet(adate, aalarm, true, 'a');
+
+      rtc.setAlarm(asetting);
+      eeprom.eput(asetting);
+      break;
+    case 'C':
+      //checkForSettingClock();   // If 'C' is pressed then sets hour and minutes.
+      // Setting Clock hour and minutes'
+      color = ST7735_GREEN;
+      asetting[0]=adate[0];      
+      asetting[1]=adate[1];
+      asetting[3]=adate[3];
+      asetting[4]=adate[4];
+      adisplay.displaySet(adate, aalarm, false, 'c');
+      
+///
+    posn = 0;
+    while(posn<5) {
+      key = keypad.getKey();
+      if(key){
+        adisplay.setCursorPrintlnColor(posn, key, asetting, color);
+
+        asetting[posn] = key;
+        //rtc.setAlarm(aalarm);
+        posn++;
+        if(posn == 2) posn ++;
+        adisplay.setColorBlink(posn, 0, asetting, color);
+       }else{ 
+        // blinks _ every interval (500ms)
+        cMillis = millis();
+        if (cMillis - pMillis >= interval) {
+          // save the last time you blinked
+          pMillis = cMillis;
+
+          if(b) b = 0; else b = 1;
+          adisplay.setColorBlink(posn, b, asetting, color);
+        }
+      }
+    } // posn 5
+
+///
+      adate[0]=asetting[0];
+      adate[1]=asetting[1];
+      adate[3]=asetting[3];
+      adate[4]=asetting[4];
+      
+      adisplay.displaySet(adate, aalarm, true,'a');
+
+      rtc.setCTime(asetting);
+      break;
+    }
+
+}
+
+void chechForSettingAnAlarm() {
 }
 
 void checkForSettingClock(){
-    adisplay.displaySetClock(adate, aalarm, false);
+    adisplay.displaySet(adate, aalarm, false, 'c');
        posn = 0;
     while(posn<5) {
       key = keypad.getKey();
@@ -133,10 +202,9 @@ void checkForSettingClock(){
         }
       }
     } // posn 5
-    adisplay.displaySetAlarm(adate, aalarm, true);
+    adisplay.displaySet(adate, aalarm, true, 'a');
     //eeprom.eput(aalarm);
     rtc.setCTime(adate);
-
 }
 
 

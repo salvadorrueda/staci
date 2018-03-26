@@ -113,30 +113,6 @@ void ADisplay::displayDateAlarm(char *odate, char *date, char *alarm){
   
 }
 
-
-void ADisplay::displaySetAlarm(char *date, char *alarm, bool settled){
-
-      tft.fillScreen(ST7735_BLACK);
-  
-      tft.setCursor(0, 0);
-      tft.setTextSize(2);
-      if(settled) tft.setTextColor(ST7735_BLACK); 
-      else tft.setTextColor(ST7735_RED);
-      tft.println("setting alarm");
-   
-      tft.setCursor(5, 30);
-      tft.setTextSize(5);
-      tft.setTextColor(ST7735_GREEN);
-      tft.println(date);  
-  
-      tft.setCursor(35, 80);
-      tft.setTextSize(3);
-      tft.setTextColor(ST7735_RED);
-      tft.println(alarm);  
-}
-
-
-
 void ADisplay::setColorBlink(int posn, bool black, char *alarm, unsigned int color){
 
     tft.setCursor(35+posn*18, 80);
@@ -171,17 +147,35 @@ void ADisplay::setCursorPrintlnColor(int posn, char key, char *alarm, unsigned i
     tft.println(key); 
 }
 
-void ADisplay::displaySetClock(char *date, char *alarm, bool settled){
+void ADisplay::displaySet(char *date, char *alarm, bool settled, char type){
+// "type" 'c' for setting clock and 'a' for setting an alarm.
+
+    char header_text[14]="setting clock"; // or setting alarm.
+    int c = ST7735_GREEN; // color  
+    char *setting;
+
+    if (type == 'c'){ // setting clock
+      strcpy(header_text,"setting clock");
+      c = ST7735_GREEN;
+      setting = date;
+      
+    }else{ // setting an alarm
+      strcpy(header_text,"setting alarm");
+      c = ST7735_RED;
+      setting = alarm;
+    }
+
 
       tft.fillScreen(ST7735_BLACK);
   
       tft.setCursor(0, 0);
       tft.setTextSize(2);
-      
+
       if(settled) tft.setTextColor(ST7735_BLACK); 
       else tft.setTextColor(ST7735_RED);
-      tft.println("setting clock");
-   
+
+      tft.println(header_text);  // setting clock or alarm
+
       tft.setCursor(5, 30);
       tft.setTextSize(5);
       tft.setTextColor(ST7735_GREEN);
@@ -189,8 +183,8 @@ void ADisplay::displaySetClock(char *date, char *alarm, bool settled){
   
       tft.setCursor(35, 80);
       tft.setTextSize(3);
-      tft.setTextColor(ST7735_GREEN);
-      tft.println(date);  
+      tft.setTextColor(c);
+      tft.println(setting);   
 }
 
 
